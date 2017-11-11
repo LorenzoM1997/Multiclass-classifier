@@ -1,4 +1,4 @@
-#personal best: 25.8218001166 % lr: 0.1 3-8-5-3-1
+#personal best: loss 25.8218001166 % lr: 0.1 3-8-5-3-1
 
 import numpy as np
 
@@ -11,7 +11,7 @@ input_file = open("tae_dataset.txt","r")
 # NATIVE SPEAKER: 1 = English Speaker, 2 = non-English speaker
 # SUMMER: 1 = Summer, 2= Regular
 # CLASS SIZE: (numerical)
-# Class attribute: 1 = Low, 2 = Medium, 3 = High
+# TA evaluation: 1 = Low, 2 = Medium, 3 = High
 for line in input_file:
     native_speaker = int(line.split(',')[0])-1
     summer = int(line.split(',')[1])-1
@@ -28,6 +28,7 @@ y = np.delete(y, 0, 0)
 input_file.close()
 np.random.seed(1)
 
+# this neural network is going to have 3 hidden layers, defined by the following weight matrices
 weights0 = 2*np.random.random((3,5)) - 1
 weights1 = 2*np.random.random((5,8)) - 1
 weights2 = 2*np.random.random((8,5)) - 1
