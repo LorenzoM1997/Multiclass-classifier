@@ -4,16 +4,18 @@ import numpy as np
 import tensorflow as tf
 
 def get_data():
-
+    
     X = np.array([[0,0,0]])
     y = np.array([[0,0,0]])
+    
+    # to work properly, you must have the file tae_datatset.txt in the same folder
     input_file = open("tae_dataset.txt","r")
 
     # there are 4 parameters in the dataset
     # NATIVE SPEAKER: 1 = English Speaker, 2 = non-English speaker
     # SUMMER: 1 = Summer, 2= Regular
     # CLASS SIZE: (numerical)
-    # Class attribute: 1 = Low, 2 = Medium, 3 = High
+    # TA evaluation: 1 = Low, 2 = Medium, 3 = High
     for line in input_file:
         native_speaker = int(line.split(',')[0])-1
         summer = int(line.split(',')[1])-1
@@ -32,14 +34,15 @@ def get_data():
 
     return X,y
 
-#all variables    
+# all variables that define the structure of the network    
 x = tf.placeholder(tf.float32, [None, 3])
 W1 = tf.Variable(tf.random_uniform([3, 5]))
 W2 = tf.Variable(tf.random_uniform([5, 3]))
 b1 = tf.Variable(tf.zeros([5]))
 b2 = tf.Variable(tf.zeros([3]))
 
-h1 = tf.sigmoid(tf.matmul(x, W1)+b1)
+# for the single hidden layer we are using I choose the sigmoid activation function
+h1 = tf.sigmoid(tf.matmul(x, W1) + b1)
 p = tf.matmul(h1, W2) + b2
 
 #the expected output matrix
@@ -48,13 +51,16 @@ y = tf.placeholder(tf.float32, [None, 3])
 #the learning rate of the Gradient Descent Optimizer
 lr = 0.5
 
+# we are going to use the cross entropy function to measure the loss of the neural network
 cross_entropy = tf.reduce_mean(
   tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=p))
 train_step = tf.train.GradientDescentOptimizer(lr).minimize(cross_entropy)
 
 sess = tf.InteractiveSession()
 tf.global_variables_initializer().run()
+
 # Train
+# we get the batch of data from the dataset file. In this case we use all the inputs together
 batch_xs, batch_ys = get_data()
 for i in range(50000):
     sess.run(train_step, feed_dict={x: batch_xs, y: batch_ys})
